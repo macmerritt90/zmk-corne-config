@@ -1,56 +1,173 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+// Layer definitions
+#define COLEMAK_DH 0
+#define QWERTY     1
+#define NUM_NAV    2
+#define SYM        3
+#define FUNC       4
+#define MOUSE      5
+
 / {
     macros {
-        amzalias: amzalias {
-            label = "AMZALIAS";
-            bindings = <&macro_tap "macdmerr">;
+        amz_alias: amz_alias {
+            label = "Amazon_Alias";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_tap &kp M &kp A &kp C &kp D &kp M &kp E &kp R &kp R>;
         };
-        amzem: amzem {
-            label = "AMZEM";
-            bindings = <&macro_tap "macdmerr@amazon.com">;
+
+        amz_email: amz_email {
+            label = "Amazon_Email";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_tap &kp M &kp A &kp C &kp D &kp M &kp E &kp R &kp R &kp AT &kp A &kp M &kp A &kp Z &kp O &kp N &kp DOT &kp C &kp O &kp M>;
         };
-        palias: palias {
-            label = "PALIAS";
-            bindings = <&macro_tap "macmerritt90">;
+
+        personal_alias: personal_alias {
+            label = "Personal_Alias";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_tap &kp M &kp A &kp C &kp M &kp E &kp R &kp R &kp I &kp T &kp T &kp N9 &kp N0>;
         };
-        pem: pem {
-            label = "PEM";
-            bindings = <&macro_tap "macmerritt90@gmail.com">;
+
+        personal_email: personal_email {
+            label = "Personal_Email";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_tap &kp M &kp A &kp C &kp M &kp E &kp R &kp R &kp I &kp T &kp T &kp N9 &kp N0 &kp AT &kp G &kp M &kp A &kp I &kp L &kp DOT &kp C &kp O &kp M>;
+        };
+
+        screenshot: screenshot {
+            label = "Screenshot";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LGUI &kp RSHFT>,
+                  <&macro_tap &kp N4>,
+                  <&macro_release &kp LGUI &kp RSHFT>;
+        };
+    };
+
+    behaviors {
+        lt_to2: layer_tap_to_layer_2 {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_TO_LAYER_2";
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;
+            quick-tap-ms = <0>;
+            flavor = "hold-preferred";
+            bindings = <&mo>, <&to>;
+        };
+
+        lt_to3: layer_tap_to_layer_3 {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_TO_LAYER_3";
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;
+            quick-tap-ms = <0>;
+            flavor = "hold-preferred";
+            bindings = <&mo>, <&to>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        // Layer 0: Base Layer (Colemak, as in your QMK example)
-        layer_0 {
+        colemak_dh_layer {
+            // -----------------------------------------------------------------------------------------
+            // |  TAB |  Q  |  W  |  F  |  P  |  B  |   |  J  |  L  |  U  |  Y  |  ;  |  \  |
+            // | ESC  |  A  |  R  |  S  |  T  |  G  |   |  M  |  N  |  E  |  I  |  O  |  '  |
+            // | SHFT |  Z  |  X  |  C  |  D  |  V  |   |  K  |  H  |  ,  |  .  |  /  | SHFT|
+            //                    | TAB | BSPC| LT2 |   | LT3 | SPC | TO1 |
             bindings = <
-                &kp TAB   &kp Q   &kp W   &kp F   &kp P   &kp B   &kp J   &kp L   &kp U   &kp Y   &kp SCLN   &kp BSLASH
-                &kp ESC   &mt LALT A   &mt LCTRL R   &mt LSHFT S   &mt LGUI T   &kp G   &kp M   &mt RGUI N   &mt RSHFT E   &mt RCTRL I   &mt RALT O   &kp QUOTE
-                &kp LSHFT &kp Z   &kp X   &kp C   &kp D   &kp V   &kp K   &kp H   &kp COMMA   &kp DOT   &kp SLASH   &kp RSHFT
-                &kp TAB   &kp BSPC   &mo 2   &mo 3   &kp SPC   &to 1
+                &kp TAB         &kp Q           &kp W           &kp F            &kp P           &kp B                 &kp J           &kp L           &kp U            &kp Y           &kp SEMI        &kp BSLH
+                &kp ESC         &mt LALT A      &mt LCTRL R     &mt LSHFT S      &mt LGUI T      &kp G                 &kp M           &mt RGUI N      &mt RSHFT E      &mt RCTRL I     &mt RALT O      &kp SQT
+                &kp LSHFT       &kp Z           &kp X           &kp C            &kp D           &kp V                 &kp K           &kp H           &kp COMMA        &kp DOT         &kp FSLH        &kp RSHFT
+                                                &kp TAB         &kp BSPC         &lt_to2 NUM_NAV COLEMAK_DH            &lt_to3 SYM COLEMAK_DH          &kp SPACE       &to QWERTY
             >;
         };
 
-        // Layer 1: QWERTY Layer
-        layer_1 {
+        qwerty_layer {
+            // -----------------------------------------------------------------------------------------
+            // |  TAB |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U  |  I  |  O  |  P  |  \  |
+            // | ESC  |  A  |  S  |  D  |  F  |  G  |   |  H  |  J  |  K  |  L  |  ;  |  '  |
+            // | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M  |  ,  |  .  |  /  | SHFT|
+            //                    | TO0 | BSPC| LT2 |   | LT3 | SPC | TO1 |
             bindings = <
-                &kp TAB   &kp Q   &kp W   &kp E   &kp R   &kp T   &kp Y   &kp U   &kp I   &kp O   &kp P   &kp BSLASH
-                &kp ESC   &mt RSHFT A   &mt LALT S   &mt LCTRL D   &mt LGUI F   &kp G   &kp H   &mt RGUI J   &mt RCTRL K   &mt RALT L   &mt RSHFT SCLN   &kp QUOTE
-                &kp LSHFT &kp Z   &kp X   &kp C   &kp V   &kp B   &kp N   &kp M   &kp COMMA   &kp DOT   &kp SLASH   &kp RSHFT
-                &to 0   &kp BSPC   &mo 2   &mo 3   &kp SPC   &to 1
+                &kp TAB         &kp Q           &kp W           &kp E            &kp R           &kp T                 &kp Y           &kp U           &kp I            &kp O           &kp P           &kp BSLH
+                &kp ESC         &mt RSHFT A     &mt LALT S      &mt LCTRL D      &mt LGUI F      &kp G                 &kp H           &mt RGUI J      &mt RCTRL K      &mt RALT L      &mt RSHFT SEMI  &kp SQT
+                &kp LSHFT       &kp Z           &kp X           &kp C            &kp V           &kp B                 &kp N           &kp M           &kp COMMA        &kp DOT         &kp FSLH        &kp RSHFT
+                                                &to COLEMAK_DH  &kp BSPC         &lt_to2 NUM_NAV QWERTY                &lt_to3 SYM QWERTY              &kp SPACE       &to QWERTY
             >;
         };
 
-        // Layer 2: Macro/Function Layer (partial example)
-        layer_2 {
+        num_nav_layer {
+            // -----------------------------------------------------------------------------------------
+            // |      | TAB  |STAB  |GUI+F |GUI+[ |ALIAS |   |EMAIL |C+LFT |C+RGT |A+BSPC| DOWN |      |
+            // |      |  1   |  2   |  3   |  4   |  5   |   |  6   |  7   |  8   |  9   |  0   |      |
+            // |      | ESC  |      | LEFT | RIGHT|PALIAS|   | PEML | UP   | DOWN |GUI+[ |GUI+] |      |
+            //                      | TO0  |      |      |   | ENT  |SCRN  | TO1  |
             bindings = <
-                &none &kp TAB &kp LS(TAB) &kp RGUI(F) &kp LGUI(LBKT) &amzalias &amzem &kp RCTRL(LEFT) &kp RCTRL(RGHT) &kp LALT(BSPC) &kp DOWN &none
-                &none &kp 1 &kp 2 &kp 3 &kp 4 &kp 5 &kp 6 &kp 7 &kp 8 &kp 9 &kp 0 &none
-                &none &kp ESC &none &kp LEFT &kp RGHT &palias &pem &kp UP &kp DOWN &kp LGUI(LBKT) &kp LGUI(RBKT) &none
-                &to 0 &none &trans &kp ENTER &kp RGUI(RSFT(4)) &to 1
+                &none           &kp TAB         &kp LS(TAB)     &kp LG(F)        &kp LG(LBKT)    &amz_alias           &amz_email      &kp LC(LEFT)    &kp LC(RIGHT)    &kp LA(BSPC)    &kp DOWN        &none
+                &none           &kp N1          &kp N2          &kp N3           &kp N4          &kp N5               &kp N6          &kp N7          &kp N8           &kp N9          &kp N0          &none
+                &none           &kp ESC         &none           &kp LEFT         &kp RIGHT       &personal_alias      &personal_email &kp UP          &kp DOWN         &kp LG(LBKT)    &kp LG(RBKT)    &none
+                                                &to COLEMAK_DH  &none            &trans                               &kp RET         &screenshot     &to QWERTY
             >;
         };
 
-        // Repeat for layers 3, 4, 5 as needed, following this pattern.
+        sym_layer {
+            // -----------------------------------------------------------------------------------------
+            // |      |  '   |  <   |  >   |  "   |  `   |   |  &   |  _   |  [   |  ]   |  %   |      |
+            // |      |  !   |  -   |  +   |  =   |  #   |   |  |   |  :   |  (   |  )   |  ?   |      |
+            // |      |  ^   |  ~   |  *   |  \   | PGDN |   | PGUP |  $   |  {   |  }   |  @   |      |
+            //                      | TO0  |S+ENT | DEL  |   |      | TO5  | TO1  |
+            bindings = <
+                &none           &kp SQT         &kp LT          &kp GT           &kp DQT         &kp GRAVE            &kp AMPS        &kp UNDER       &kp LBKT         &kp RBKT        &kp PRCNT       &none
+                &none           &kp EXCL        &kp MINUS       &kp PLUS         &kp EQUAL       &kp HASH             &kp PIPE        &kp COLON       &kp LPAR         &kp RPAR        &kp QMARK       &none
+                &none           &kp CARET       &kp TILDE       &kp ASTRK        &kp BSLH        &kp PG_DN            &kp PG_UP       &kp DLLR        &kp LBRC         &kp RBRC        &kp AT          &none
+                                                &to COLEMAK_DH  &kp LS(RET)      &kp DEL                              &trans          &to MOUSE       &to QWERTY
+            >;
+        };
+
+        func_layer {
+            // -----------------------------------------------------------------------------------------
+            // |      |      |      |      |GUI+R |      |   |      |      |      |GUI+O |      |      |
+            // |      |C+TAB |C+S+TB|      |GUI+F |C+G   |   |GUI+G |GUI+[ |GUI+] |      |RSHFT |      |
+            // |      |LSHFT |      | LEFT | RIGHT|GUI+B |   |      | UP   | DOWN |      |RSHFT |      |
+            //                      | TO0  | BTN1 |      |   |      |A+ENT | TO1  |
+            bindings = <
+                &none           &none           &none           &none            &kp LG(R)       &none                &none           &none           &none            &kp LG(O)       &none           &none
+                &none           &kp LC(TAB)     &kp LC(LS(TAB)) &none            &kp LG(F)       &kp LC(G)            &kp LG(G)       &kp LG(LBKT)    &kp LG(RBKT)     &none           &kp RSHFT       &none
+                &none           &kp LSHFT       &none           &kp LEFT         &kp RIGHT       &kp LG(B)            &none           &kp UP          &kp DOWN         &none           &kp RSHFT       &none
+                                                &to COLEMAK_DH  &kp K_MUTE       &none                                &none           &kp LA(RET)     &to QWERTY
+            >;
+        };
+
+        mouse_layer {
+            // -----------------------------------------------------------------------------------------
+            // |      |BRIDN |BRIUP |MS_UP |BTN2  |VOL+  |   | F1   | F2   | UP   | F4   | F5   |      |
+            // |      |WH_U  |MS_LFT|BTN1  |MS_RGT|VOL-  |   | LEFT | DOWN | UP   |RIGHT |      |      |
+            // |      |WH_D  |WH_LFT|MS_DN |WH_RGT|MUTE  |   | F11  | F12  |      |      |      |      |
+            //                      | TO0  |      |      |   |      |      | TO1  |
+            bindings = <
+                &none           &none           &none           &none            &none           &none                &kp F1          &kp F2          &kp UP           &kp F4          &kp F5          &none
+                &none           &none           &none           &none            &none           &none                &kp LEFT        &kp DOWN        &kp UP           &kp RIGHT       &none           &none
+                &none           &none           &none           &none            &none           &none                &kp F11         &kp F12         &none            &none           &none           &none
+                                                &to COLEMAK_DH  &none            &none                                &none           &none           &to QWERTY
+            >;
+        };
     };
 };
